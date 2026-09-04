@@ -8,9 +8,38 @@ const client=new MongoClient(MONGODB_URI);
 let collection, state;
 function seed(){const bundled=path.join(__dirname,'db.json');try{return normalize(JSON.parse(fs.readFileSync(bundled,'utf8')))}catch{return normalize({users:{},results:[],transactions:[],requests:[],loginHistory:[],settings:{},predictions:[]})}}
 function normalize(d){d=d&&typeof d==='object'?d:{};d.users=d.users&&typeof d.users==='object'?d.users:{};d.results=Array.isArray(d.results)?d.results:[];d.transactions=Array.isArray(d.transactions)?d.transactions:[];d.requests=Array.isArray(d.requests)?d.requests:[];d.loginHistory=Array.isArray(d.loginHistory)?d.loginHistory:[];d.settings=d.settings&&typeof d.settings==='object'?d.settings:{};d.predictions=Array.isArray(d.predictions)?d.predictions:[];return d}
-async function initMongo(){await client.connect();const db=client.db(MONGODB_DB);collection=db.collection('app_state');let doc=await collection.findOne({_id:'main'});if(!doc){state=seed();await collection.insertOne({_id:'main',data:state,updatedAt:new Date()});}else state=normalize(doc.data);console.log(`MongoDB connected: ${MONGODB_DB}.app_state`)}
+async function initMongo(){
+  await client.connect();
+  const db=client.db(MONGODB_DB);
+  collection=db.collection('app_state');
+  let doc=await collection.findOne({_id:'main'});
+  if(!doc){
+    state=seed();
+    await collection.insertOne({_id:'main',...state,updatedAt:new Date()});
+  } else {
+    // FIX: pehle yahan hamesha `doc.data` padha jaata tha (matlab code
+    // expect karta tha ki users/results/waghera ek "data" naam ke field
+    // ke ANDAR nested hon). Lekin Atlas mein migrate hua asli document
+    // in fields ko seedha TOP LEVEL pe rakhta hai (koi data-wrapper hai
+    // hi nahi) — isliye `doc.data` hamesha undefined milta tha, aur
+    // normalize(undefined) khaali defaults de deta tha. Matlab d.users
+    // hamesha {} hota tha, isliye KOI bhi login kabhi match nahi karta
+    // tha, chahe password sahi ho.
+    //
+    // Ab dono shapes handle hoti hain: agar purana nested "data" wrapper
+    // mile (kisi purani deployment se) to wahi use hoga; nahi to seedha
+    // top-level document hi use hoga (jo asal mein Atlas mein hai) —
+    // isse bina manually DB migrate kiye hi sahi data mil jaata hai.
+    const raw = (doc.data && typeof doc.data === 'object') ? doc.data : doc;
+    state=normalize(raw);
+  }
+  console.log(`MongoDB connected: ${MONGODB_DB}.app_state`);
+}
 function read(){return state}
-function write(d){state=normalize(d);return collection.replaceOne({_id:'main'},{$set:{data:state,updatedAt:new Date()}},{upsert:true}).catch(e=>console.error('MongoDB write error:',e.message))}
+// Ab likhte waqt bhi FLAT (top-level) hi likhte hain — jo asal document
+// ke structure se match karta hai, taaki dobara koi read/write mismatch
+// na bane.
+function write(d){state=normalize(d);return collection.replaceOne({_id:'main'},{$set:{...state,updatedAt:new Date()}},{upsert:true}).catch(e=>console.error('MongoDB write error:',e.message))}
 function json(res,c,d){res.writeHead(c,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});res.end(JSON.stringify(d))}
 function body(req){return new Promise((ok,no)=>{let s='';req.on('data',c=>{s+=c;if(s.length>1e6)req.destroy()});req.on('end',()=>{try{ok(s?JSON.parse(s):{})}catch(e){no(e)}})})}
 function safe(u){return {username:u.username,role:u.role,coins:Number(u.coins||0),blocked:!!u.blocked,createdBy:u.createdBy||null,createdAt:u.createdAt||null}}
