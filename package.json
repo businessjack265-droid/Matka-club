@@ -1,0 +1,12 @@
+{
+  "name": "matka-club-v30",
+  "version": "30.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "mongodb": "^6.19.0"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "users": {
+    "superadmin": {
+      "username": "superadmin",
+      "password": "super123",
+      "role": "SUPERADMIN",
+      "coins": 10000000,
+      "blocked": false,
+      "createdAt": 1756810000000
+    },
+    "admin": {
+      "username": "admin",
+      "password": "admin123",
+      "role": "ADMIN",
+      "coins": 0,
+      "blocked": false,
+      "createdAt": 1756810000000
+    },
+    "user": {
+      "username": "user",
+      "password": "user123",
+      "role": "USER",
+      "coins": 0,
+      "blocked": false,
+      "createdBy": "admin",
+      "createdAt": 1756810000000
+    }
+  },
+  "results": [
+    {
+      "market": "Kalyan Morning",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    },
+    {
+      "market": "Kalyan",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    },
+    {
+      "market": "Kalyan Night",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    },
+    {
+      "market": "Milan Morning",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    },
+    {
+      "market": "Milan Day",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    },
+    {
+      "market": "Milan Night",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    },
+    {
+      "market": "Bombay Day",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    },
+    {
+      "market": "Bombay Night",
+      "openPatti": "---",
+      "openAnk": "-",
+      "jodi": "--",
+      "closePatti": "---",
+      "closeAnk": "-",
+      "published": false
+    }
+  ],
+  "transactions": [],
+  "requests": [],
+  "loginHistory": [],
+  "settings": {
+    "siteName": "MATKA CLUB",
+    "support": ""
+  }
+}
